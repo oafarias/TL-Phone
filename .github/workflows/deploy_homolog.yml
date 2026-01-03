@@ -1,0 +1,41 @@
+name: Deploy Homolog (Staging)
+
+on:
+  push:
+    branches:
+      - homolog  # Dispara apenas quando houver push na branch homolog [cite: 22]
+
+jobs:
+  deploy:
+    name: Deploy to DigitalOcean
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Executing remote ssh commands using password/key
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST_DNS }}      # IP ou Domínio da VM
+        username: ${{ secrets.USERNAME }}  # Geralmente 'root' ou seu user
+        key: ${{ secrets.EC2_SSH_KEY }}    # Sua chave privada SSH
+        port: 22
+        script: |
+          # Entra na pasta do projeto (ajuste o caminho se necessário)
+          cd /var/www/tl-iphone
+          
+          # 1. Garante que estamos na branch certa e atualiza o código [cite: 30]
+          git fetch origin homolog
+          git reset --hard origin/homolog
+          
+          # 2. Ativa o ambiente virtual e instala dependências [cite: 31]
+          source venv/bin/activate
+          pip install -r requirements.txt
+          
+          # 3. Aplica migrações no banco de dados [cite: 31]
+          python manage.py migrate
+          
+          # 4. Coleta arquivos estáticos (CSS/JS)
+          python manage.py collectstatic --noinput
+          
+          # 5. Reinicia o serviço Gunicorn específico de homologação [cite: 33]
+          # Nota: Se o serviço ainda não existe, esse passo falhará na primeira vez.
+          sudo systemctl restart gunicorn_homolog
