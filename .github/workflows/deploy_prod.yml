@@ -19,19 +19,19 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
-          # Cria pasta de producao se nao existir
+          # Garante a pasta de produção
           sudo mkdir -p /var/www/tl-iphone-prod
           sudo chown -R ubuntu:ubuntu /var/www/tl-iphone-prod
           
           cd /var/www/tl-iphone-prod
           
-          # Inicializa git (apenas se necessario)
+          # Inicializa git se necessario
           if [ ! -d ".git" ]; then
             git init
             git remote add origin https://github.com/oafarias/TL-Phone.git
           fi
           
-          # Baixa o codigo da MAIN
+          # Baixa codigo da MAIN
           git fetch origin main
           git reset --hard origin/main
           
@@ -47,5 +47,5 @@ jobs:
           python manage.py migrate
           python manage.py collectstatic --noinput
           
-          # Reinicia servico de PROD
+          # Reinicia servico
           sudo systemctl restart gunicorn_prod
