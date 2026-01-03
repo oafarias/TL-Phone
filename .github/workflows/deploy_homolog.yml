@@ -3,7 +3,7 @@ name: Deploy Homolog (Staging)
 on:
   push:
     branches:
-      - [cite_start]homolog  # Dispara apenas quando houver push na branch homolog [cite: 22]
+      - homolog  # Dispara apenas quando houver push na branch homolog [cite: 22]
 
 jobs:
   deploy:
