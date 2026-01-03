@@ -25,7 +25,12 @@ SECRET_KEY = 'django-insecure-3goc3i_ba^t099m3#xh+#sgd%9p75wtrc%0iue4e5pejokqsj9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '44.205.9.206',    # O IP atual (para funcionar agora)
+    'localhost',       # Para rodar na sua máquina
+    '127.0.0.1',       # Para rodar na sua máquina
+    '.aaleff.me',      # Já preparando para o futuro subdomínio
+]
 
 
 # Application definition
