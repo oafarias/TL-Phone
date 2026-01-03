@@ -1,0 +1,21 @@
+# Ignorar Chaves e Variáveis de Ambiente (CRUCIAL)
+.env
+.env.local
+*.pem
+*.key
+credentials.json
+
+# Ignorar Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+
+# Ignorar IDEs e OS
+.vscode/
+.idea/
+.DS_Store
+
+# Ignorar Banco de Dados Local (se for SQLite)
+db.sqlite3
