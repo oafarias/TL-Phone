@@ -19,18 +19,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3goc3i_ba^t099m3#xh+#sgd%9p75wtrc%0iue4e5pejokqsj9'
+# 1. SECRET_KEY:
+# Tenta pegar a chave segura do servidor. Se não achar, usa essa "fraca" apenas para seu PC local.
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-3goc3i_ba^t099m3#xh+#sgd%9p75wtrc%0iue4e5pejokqsj9')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# 2. DEBUG:
+# O padrão é True (para facilitar sua vida programando).
+# Mas se o servidor gritar "DEBUG=False" (via variável de ambiente), ele obedece e blinda o site.
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = [
-    '44.205.9.206',    # O IP atual (para funcionar agora)
-    'localhost',       # Para rodar na sua máquina
-    '127.0.0.1',       # Para rodar na sua máquina
-    '.aaleff.me',      # Já preparando para o futuro subdomínio
-]
+# 3. ALLOWED_HOSTS:
+# Pega a lista do servidor OU usa os padrões locais
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+
+# Adiciona o IP da AWS e o domínio se não estiverem na lista (garantia extra)
+if '44.205.9.206' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('44.205.9.206')
+if '.aaleff.me' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('.aaleff.me')
 
 
 # Application definition
