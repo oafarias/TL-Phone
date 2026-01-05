@@ -57,8 +57,8 @@ INSTALLED_APPS = [
     # Apps de terceiros
     'corsheaders',
     'storages',
-    'rest_framework',  # <--- ADICIONE AQUI O DRF
-
+    'rest_framework',  # Django Rest Framework
+    'drf_yasg', # Documentação automática de APIs com Swagger
     # Meus Apps
     'core',
 ]
