@@ -3,15 +3,15 @@ name: Deploy Production (Live)
 on:
   push:
     branches:
-      - main
+      - main  # Só roda quando o código chegar na main
 
 jobs:
   deploy:
-    name: Deploy Prod to DigitalOcean/AWS
+    name: Deploy to AWS Production
     runs-on: ubuntu-latest
 
     steps:
-    - name: Executing remote ssh commands
+    - name: Executing remote ssh commands using password/key
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST_DNS }}
@@ -19,33 +19,21 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
-          # Garante a pasta de produção
-          sudo mkdir -p /var/www/tl-iphone-prod
-          sudo chown -R ubuntu:ubuntu /var/www/tl-iphone-prod
-          
+          # 1. Entra na pasta de PRODUÇÃO
           cd /var/www/tl-iphone-prod
           
-          # Inicializa git se necessario
-          if [ ! -d ".git" ]; then
-            git init
-            git remote add origin https://github.com/oafarias/TL-Phone.git
-          fi
-          
-          # Baixa codigo da MAIN
+          # 2. Atualiza o código vindo da Main
           git fetch origin main
           git reset --hard origin/main
           
-          # Setup Python
-          if [ ! -d "venv" ]; then
-            python3 -m venv venv
-          fi
-          
+          # 3. Ativa ambiente e instala dependências (incluindo o novo DRF/Swagger)
           source venv/bin/activate
           pip install -r requirements.txt
           
-          # Banco e Static
+          # 4. Migrações e Estáticos (Igual fizemos na homolog)
           python manage.py migrate
           python manage.py collectstatic --noinput
           
-          # Reinicia servico
-          sudo systemctl restart gunicorn_prod
+          # 5. Reinicia o serviço de PRODUÇÃO
+          # Importante: Confirme se o serviço lá chama 'gunicorn-prod' ou 'gunicorn_prod'
+          sudo systemctl restart gunicorn-prod
