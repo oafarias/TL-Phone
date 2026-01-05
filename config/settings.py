@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # Apps de terceiros
+    'corsheaders',
     'storages',
     'rest_framework',  # <--- ADICIONE AQUI O DRF
 
@@ -63,6 +64,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -173,3 +175,20 @@ if AWS_ACCESS_KEY_ID:
 else:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Configuração do Django Rest Framework
+REST_FRAMEWORK = {
+    # Paginação (opcional, mas bom pra não carregar 1 milhão de produtos de vez)
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+
+    # Segurança:
+    # IsAuthenticatedOrReadOnly:
+    # - Visitantes anônimos: Podem LER (GET)
+    # - Usuários logados: Podem ESCREVER (POST, PUT, DELETE)
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ]
+}
