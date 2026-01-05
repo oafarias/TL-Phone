@@ -192,3 +192,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ]
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' # Default primary key field type
