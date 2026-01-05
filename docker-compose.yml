@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # --- Sua Aplicação (TL iPhone) ---
+  web:
+    build: .
+    container_name: tl-iphone-web
+    command: gunicorn setup.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
+    expose:
+      - "8000" # Não expõe pra fora, só pra rede interna do Docker
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - tl-network
+    restart: always
+
+  # --- Banco de Dados ---
+  db:
+    image: postgres:15
+    container_name: tl-iphone-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    networks:
+      - tl-network
+    restart: always
+
+  # --- O Gerenciador de Domínios (Nginx Proxy Manager) ---
+  npm:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - '80:80'     # Porta Web
+      - '81:81'     # Painel de Admin do Nginx
+      - '443:443'   # HTTPS (SSL)
+    volumes:
+      - ./npm-data:/data
+      - ./npm-letsencrypt:/etc/letsencrypt
+    networks:
+      - tl-network
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+
+networks:
+  tl-network:
+    driver: bridge

@@ -1,0 +1,38 @@
+name: Deploy Homolog (Staging)
+
+on:
+  push:
+    branches:
+      - homolog
+
+jobs:
+  deploy:
+    name: Deploy to AWS
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Executing remote ssh commands using password/key
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST_DNS }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22
+        script: |
+          # 1. Entra na pasta CORRETA de homologação
+          cd /var/www/tl-iphone-homolog
+          
+          # 2. Atualiza o código vindo do GitHub
+          git fetch origin homolog
+          git reset --hard origin/homolog
+          
+          # 3. Ativa o ambiente virtual e instala dependências
+          source venv/bin/activate
+          pip install -r requirements.txt
+          
+          # 4. Aplica migrações e coleta estáticos (Arruma o CSS)
+          python manage.py migrate
+          python manage.py collectstatic --noinput
+          
+          # 5. Reinicia o serviço Gunicorn correto (com hífen)
+          sudo systemctl restart gunicorn-homolog
