@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Se tiver senha de banco no .env (ou seja, estamos no servidor), usa Postgres.
 # Senão, usa SQLite (computador local).
-if os.getenv('DB_HOST'):
+if os.getenv('DB_NAME'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -106,10 +106,11 @@ if os.getenv('DB_HOST'):
             'USER': os.getenv('DB_USER'),
             'PASSWORD': os.getenv('DB_PASSWORD'),
             'HOST': os.getenv('DB_HOST'),
-            'PORT': os.getenv('DB_PORT'),
+            'PORT': os.getenv('DB_PORT', '5432'),
         }
     }
 else:
+    # Se não tiver variáveis de ambiente (Ambiente Local), usa SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
