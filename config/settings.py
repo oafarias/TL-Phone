@@ -79,7 +79,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'], # Diretório global de templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -154,7 +154,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'staticfiles' # Onde o collectstatic vai jogar os arquivos prontos para produção
+STATICFILES_DIRS = [
+    BASE_DIR / 'static', # Onde estão os arquivos estáticos do projeto (antes do collectstatic)
+]
 
 # Configuração AWS S3
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')

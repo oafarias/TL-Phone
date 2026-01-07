@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - TL iPhone{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    
+    <a href="{% url 'index' %}" class="btn btn-outline-secondary mb-4">← Voltar para a Loja</a>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm p-3">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+                {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center text-muted" style="height: 400px;">
+                        Sem Imagem
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h1 class="fw-bold mb-3">{{ product.name }}</h1>
+            <h2 class="text-success fw-bold mb-4">R$ {{ product.price }}</h2>
+            
+            <div class="mb-4">
+                <h5 class="text-muted">Descrição:</h5>
+                <p class="lead fs-6">{{ product.description }}</p>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button class="btn btn-warning btn-lg fw-bold text-dark">Adicionar ao Carrinho 🛒</button>
+                <button class="btn btn-success btn-lg fw-bold">Comprar Agora ⚡</button>
+            </div>
+
+            <hr class="my-4">
+            
+            <div class="small text-muted">
+                <p>✅ Garantia TL iPhone</p>
+                <p>🚚 Frete Grátis para todo o Brasil</p>
+                <p>💳 Parcelamento em até 12x</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
