@@ -34,14 +34,18 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-3goc3i_ba^t099m3#xh+#sgd%9
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 # 3. ALLOWED_HOSTS:
-# Pega a lista do servidor OU usa os padrões locais
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
-# Adiciona o IP da AWS e o domínio se não estiverem na lista (garantia extra)
+# Adiciona garantias
 if '44.205.9.206' not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append('44.205.9.206')
 if '.aaleff.me' not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append('.aaleff.me')
+
+# CORREÇÃO: Adicionar o domínio do túnel do VS Code
+ALLOWED_HOSTS.append('.devtunnels.ms') 
+# Ou, se preferir liberar tudo localmente (recomendado apenas para dev):
+# ALLOWED_HOSTS.append('*')
 
 
 # Application definition
